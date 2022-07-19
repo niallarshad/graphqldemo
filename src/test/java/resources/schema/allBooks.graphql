@@ -1,0 +1,9 @@
+query {
+    allBooks {
+        isn
+        title
+        authors
+        publishedDate
+        publisher
+    }
+}

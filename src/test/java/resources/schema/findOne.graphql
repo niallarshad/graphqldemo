@@ -1,0 +1,9 @@
+query {
+    book(id:"123") {
+        isn
+        title
+        authors
+        publishedDate
+        publisher
+    }
+}

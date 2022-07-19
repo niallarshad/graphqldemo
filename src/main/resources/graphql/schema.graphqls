@@ -1,0 +1,26 @@
+type Query {
+    allBooks: [Book]
+    book(id: String): Book
+}
+
+type Mutation {
+    addBook(book: BookInput): Book
+    deleteBook(isn: String!) : Boolean
+    updateBook(book: BookInput): Book
+}
+
+input BookInput {
+    isn: String!
+    title: String
+    publisher: String
+    authors: [String]
+    publishedDate: String
+}
+
+type Book {
+    isn: String
+    title: String
+    publisher: String
+    authors: [String]
+    publishedDate: String
+}
