@@ -1,6 +1,7 @@
 package com.example.demo.web;
 
 import com.example.demo.model.Book;
+import com.example.demo.model.BookInput;
 import com.example.demo.repository.BookRepository;
 import com.example.demo.service.BookService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -49,7 +50,7 @@ public class BookControllerTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         om = new ObjectMapper();
     }
 
@@ -96,6 +97,66 @@ public class BookControllerTest {
         assertThat(responseBook.getTitle().toLowerCase()).isEqualTo(book.getTitle().toLowerCase());
         assertThat(responseBook.getPublishedDate().toLowerCase()).isEqualTo(book.getPublishedDate().toLowerCase());
         assertThat(responseBook.getAuthors().get(0).toLowerCase()).isEqualTo(book.getAuthors().get(0).toLowerCase());
+    }
+
+    @Test
+    public void updateBook() throws IOException {
+        Book book = new Book("125", "Java 10 programming", "Orielly",
+                Collections.singletonList("Tony Stark"), "mar 22");
+
+        Mockito.when(bookService.updateBook(Mockito.any(BookInput.class))).thenReturn(book);
+
+        GraphQLResponse response = graphQLTestTemplate.postForResource("schema/updateBook.graphql");
+        assertThat(response.isOk()).isTrue();
+
+        String responseStr = response.getRawResponse().getBody();
+        Map<String, Object> responseDataMap = om.readValue(responseStr, new TypeReference<>() {});
+        Map<String, Book> responseBookMap = om.convertValue(responseDataMap.get("data"), new TypeReference<>() {}) ;
+        Book responseBook =  responseBookMap.get("updateBook");
+
+        assertThat(responseBook.getIsn().toLowerCase()).isEqualTo(book.getIsn().toLowerCase());
+        assertThat(responseBook.getPublisher().toLowerCase()).isEqualTo(book.getPublisher().toLowerCase());
+        assertThat(responseBook.getTitle().toLowerCase()).isEqualTo(book.getTitle().toLowerCase());
+        assertThat(responseBook.getPublishedDate().toLowerCase()).isEqualTo(book.getPublishedDate().toLowerCase());
+        assertThat(responseBook.getAuthors().get(0).toLowerCase()).isEqualTo(book.getAuthors().get(0).toLowerCase());
+    }
+
+    @Test
+    public void addBook() throws IOException {
+        Book book = new Book("125", "Java 10 programming", "Orielly",
+                Collections.singletonList("Tony Stark"), "mar 22");
+
+        Mockito.when(bookService.addBook(Mockito.any(BookInput.class))).thenReturn(book);
+
+        GraphQLResponse response = graphQLTestTemplate.postForResource("schema/addBook.graphql");
+        assertThat(response.isOk()).isTrue();
+
+        String responseStr = response.getRawResponse().getBody();
+        Map<String, Object> responseDataMap = om.readValue(responseStr, new TypeReference<>() {});
+        Map<String, Book> responseBookMap = om.convertValue(responseDataMap.get("data"), new TypeReference<>() {}) ;
+        Book responseBook =  responseBookMap.get("addBook");
+
+        assertThat(responseBook.getIsn().toLowerCase()).isEqualTo(book.getIsn().toLowerCase());
+        assertThat(responseBook.getPublisher().toLowerCase()).isEqualTo(book.getPublisher().toLowerCase());
+        assertThat(responseBook.getTitle().toLowerCase()).isEqualTo(book.getTitle().toLowerCase());
+        assertThat(responseBook.getPublishedDate().toLowerCase()).isEqualTo(book.getPublishedDate().toLowerCase());
+        assertThat(responseBook.getAuthors().get(0).toLowerCase()).isEqualTo(book.getAuthors().get(0).toLowerCase());
+    }
+
+    @Test
+    public void deleteBook() throws IOException {
+        String isn = "123";
+
+        Mockito.when(bookService.deleteBook(isn)).thenReturn(true);
+
+        GraphQLResponse response = graphQLTestTemplate.postForResource("schema/deleteBook.graphql");
+        assertThat(response.isOk()).isTrue();
+
+        String responseStr = response.getRawResponse().getBody();
+        Map<String, Object> responseDataMap = om.readValue(responseStr, new TypeReference<>() {});
+        Map<String, Boolean> responseBookMap = om.convertValue(responseDataMap.get("data"), new TypeReference<>() {}) ;
+        Boolean responseBook =  responseBookMap.get("deleteBook");
+        assertThat(responseBook).isEqualTo(true);
     }
 
 }

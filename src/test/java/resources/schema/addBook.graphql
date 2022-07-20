@@ -1,0 +1,11 @@
+mutation {
+    addBook(
+        book: {isn: "125", title: "Java 10 programming", authors: ["Tony Stark"], publishedDate: "mar 22", publisher: "Orielly"}
+    ) {
+        isn
+        title
+        authors
+        publisher
+        publishedDate
+    }
+}
